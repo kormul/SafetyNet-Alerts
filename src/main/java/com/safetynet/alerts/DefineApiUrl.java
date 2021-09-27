@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix="com.safetynet.alerts.apiUrl")
+@ConfigurationProperties(prefix="com.safetynet.alerts")
 public class DefineApiUrl {
 	
 	private String apiUrl;
