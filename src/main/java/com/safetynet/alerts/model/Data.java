@@ -1,5 +1,6 @@
 package com.safetynet.alerts.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @lombok.Data
@@ -9,6 +10,12 @@ public class Data {
 	private List<FireStation>firestations;
 	private List<MedicalRecord> medicalrecords;
 
+	public Data() {
+		this.persons = new ArrayList<>();
+		this.firestations = new ArrayList<>();
+		this.medicalrecords = new ArrayList<>();
+	}
+	
 	public Person getPersonWithName(String firstName, String lastName) {
 		
 		for(Person person : persons) {

@@ -4,12 +4,13 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Person {
 	
-
 	@NotNull(message = "Person : Name is null")
 	private String firstName;
 	
