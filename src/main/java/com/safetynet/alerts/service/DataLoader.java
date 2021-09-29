@@ -20,17 +20,18 @@ public class DataLoader {
 	@Bean
 	public static Data readJsonFile() {
 		log.debug("start read JsonFile");
-		Data data = null;
+		Data data = new Data();
+		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
 		try {
 			data = objectMapper.readValue(new File("src/main/resources/json/data.json"), Data.class);
 		} catch (JsonParseException e) {
-			log.debug(e.getMessage());
+			log.error(e.getMessage());
 		} catch (JsonMappingException e) {
-			log.debug(e.getMessage());
+			log.error(e.getMessage());
 		} catch (IOException e) {
-			log.debug(e.getMessage());
+			log.error(e.getMessage());
 		}
 		log.debug("end read JsonFile");
 		return data;
