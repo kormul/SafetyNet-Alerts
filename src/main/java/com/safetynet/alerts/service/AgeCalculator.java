@@ -22,6 +22,7 @@ public class AgeCalculator {
 			log.debug("end AgeCalculator");
 		    return Period.between(birthDate, currentDate).getYears();
 		}catch(Exception e) {
+			System.out.println(birthday);
 			log.error("Person format date invalid");
 			throw new IllegalArgumentException("BirthDay Date format");
 		}
