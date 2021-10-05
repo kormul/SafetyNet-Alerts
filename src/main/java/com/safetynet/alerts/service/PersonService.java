@@ -29,7 +29,6 @@ public class PersonService {
 	private Validator validator;
 	
 	public boolean postPersonService(Person person) { 
-		
 		Set<ConstraintViolation<Person>> violations = validator.validate(person);
 		for (ConstraintViolation<Person> violation : violations) {
 		    log.error(violation.getMessage()); 

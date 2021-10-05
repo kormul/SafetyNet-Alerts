@@ -69,6 +69,9 @@ public class FireStationService {
 	public boolean deletefireStationService(FireStation fireStation) {
 		
 		boolean isDelete = false;
+		if(fireStation == null) {
+			return false;
+		}
 		if(fireStation.getAddress() != null) {
 			for(FireStation fireStationToEdit : data.getFirestations()) {
 				if(fireStationToEdit.getAddress().equalsIgnoreCase(fireStation.getAddress())) {
@@ -77,13 +80,17 @@ public class FireStationService {
 				}
 			}
 		}
+		List<FireStation> fireStationsDelete = new ArrayList<>();
 		if(fireStation.getStation() != null){
 			for(FireStation fireStationToEdit : data.getFirestations()) {
 				if(fireStationToEdit.getStation().equalsIgnoreCase(fireStation.getStation())) {
-						data.getFirestations().remove(fireStationToEdit);
+						fireStationsDelete.add(fireStationToEdit);
 						isDelete = true;
 				}
 			}
+		}
+		for(FireStation fireStationToEdit : fireStationsDelete) {
+			data.getFirestations().remove(fireStationToEdit);
 		}
 		return isDelete;
 	}
@@ -94,6 +101,9 @@ public class FireStationService {
 		
 		List<FloodDTO> floodList = new ArrayList<>();
 		
+		if(stationNumbers == null) {
+			return new ArrayList<>();
+		}
 		for(String stationNumber : stationNumbers) {
 			FloodDTO floodDTO = new FloodDTO(stationNumber,new ArrayList<>());
 		
