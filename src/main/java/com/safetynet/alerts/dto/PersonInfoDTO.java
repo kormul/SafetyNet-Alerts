@@ -3,10 +3,10 @@ package com.safetynet.alerts.dto;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 @AllArgsConstructor
-@Data
+@Getter
 public class PersonInfoDTO {
 	
     private String firstName;

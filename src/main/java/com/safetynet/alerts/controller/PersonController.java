@@ -5,13 +5,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,43 +30,43 @@ public class PersonController {
 	private PersonService personService;
 	
 	@PostMapping("/person")
-	public void postPersonController(@RequestBody Person person, HttpServletResponse response) {
+	public ResponseEntity<String>  postPersonController(@RequestBody Person person) {
 		boolean isCreate = personService.postPersonService(person);
 
 		if(isCreate) {
 			log.info("Person created");
-			response.setStatus(201);
+			return new ResponseEntity<>("Created!", HttpStatus.CREATED);
 		}
 		else {
 			System.out.println("lama");
 			log.error("Person don't create"); 
-			response.setStatus(400);
+			return new ResponseEntity<>("Error Created!", HttpStatus.BAD_REQUEST);
 		}
 	}
 	
 	@PutMapping("/person")
-	public void putPersonController(@RequestBody Person person, HttpServletResponse response){
+	public ResponseEntity<String> putPersonController(@RequestBody Person person){
 		boolean isUpdate = personService.putPersonService(person);
 		if(isUpdate) {
-			log.info("Person created");
-			response.setStatus(200);
+			log.info("Person updated");
+			return new ResponseEntity<>("Modified!", HttpStatus.OK);
 		}
 		else {
 			log.error("Person don't find");
-			response.setStatus(404);
+			return new ResponseEntity<>("Error modified!", HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	@DeleteMapping("/person")
-	public void deletePersonController(@RequestParam(value="firstName") String firstName, @RequestParam(value="lastName") String lastName, HttpServletResponse response) {
+	public ResponseEntity<String> deletePersonController(@RequestParam(value="firstName") String firstName, @RequestParam(value="lastName") String lastName) {
 		boolean isDelete = personService.deletePersonService(firstName, lastName);
 		if(isDelete) {
-			log.info("Person created");
-			response.setStatus(200);
+			log.info("Person deleted");
+			return new ResponseEntity<>("Deleted!", HttpStatus.OK);
 		}
 		else {
 			log.error("Person don't find"); 
-			response.setStatus(404);
+			return new ResponseEntity<>("Error deleted!", HttpStatus.NOT_FOUND);
 		}
 	}
 	

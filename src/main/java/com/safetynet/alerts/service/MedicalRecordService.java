@@ -61,17 +61,17 @@ public class MedicalRecordService {
 	public boolean deleteMedicalRecordService(String firstName, String lastName) {
 		
 		if(firstName == null || lastName == null) {
-			log.error("the data transmitted does not contain a fistname or lastname");;
+			log.error("the data transmitted does not contain a fistname or lastname");
 			return false;
 		}
 		
 		MedicalRecord medicalRecordToEdit = data.getMedicalRecordWithName(firstName, lastName);
 		if(medicalRecordToEdit == null) {
-			log.error("medical record don't find");;
+			log.error("medical record don't find");
 			return false;
 		}
 		data.getMedicalrecords().remove(medicalRecordToEdit);
-		return false;
+		return true;
 	}
 
 }

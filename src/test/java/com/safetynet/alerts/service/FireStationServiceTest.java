@@ -8,12 +8,16 @@ import static org.mockito.Mockito.lenient;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Validator;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.safetynet.alerts.dto.FireDTO;
@@ -24,7 +28,8 @@ import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 
-@SpringBootTest(classes = {DataLoader.class})
+@SpringBootTest
+@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class FireStationServiceTest {
 	
@@ -33,6 +38,12 @@ public class FireStationServiceTest {
 	
 	@Mock
 	private Data data;
+	
+	@Mock
+	private Validator validator;
+	
+	@Autowired
+	private Validator validator2;
 
 	@BeforeEach
 	public void setupData() {
@@ -68,13 +79,14 @@ public class FireStationServiceTest {
 		}
 		for(FireStation fireStation : fireStations) {
 			lenient().when(data.getFirestationsWithAddress(fireStation.getAddress())).thenReturn(fireStation.getStation());
+			lenient().when(validator.validate(fireStation)).thenReturn(validator2.validate(fireStation));
 		}
 	} 
 	
-	/*@Test
+	@Test
 	public void putFirestationTest() {
-		boolean res = fireStationService.putfireStationService(new FireStation("2","4 la ruelle"));
-		assertFalse(res);
+		boolean res = fireStationService.putfireStationService(new FireStation("4 la ruelle","2"));
+		assertTrue(res);
 		assertTrue(this.data.getFirestations().size() == 3);		
 		assertThat(this.data.getFirestations().get(0).getStation()).isEqualTo("2");
 		assertThat(this.data.getFirestations().get(0).getAddress()).isEqualTo("4 la ruelle");
@@ -82,7 +94,31 @@ public class FireStationServiceTest {
 		assertThat(this.data.getFirestations().get(1).getAddress()).isEqualTo("8 rue grande");
 		assertThat(this.data.getFirestations().get(2).getStation()).isEqualTo("2");
 		assertThat(this.data.getFirestations().get(2).getAddress()).isEqualTo("4 avenue des champs élysée");
-	}*/
+	}
+	@Test
+	public void putFirestationTestWithNull() {
+		boolean res = fireStationService.putfireStationService(new FireStation());
+		assertFalse(res);
+		assertThat(this.data.getFirestations().size() == 3);		
+		assertThat(this.data.getFirestations().get(0).getStation()).isEqualTo("1");
+		assertThat(this.data.getFirestations().get(0).getAddress()).isEqualTo("4 la ruelle");
+		assertThat(this.data.getFirestations().get(1).getStation()).isEqualTo("1");
+		assertThat(this.data.getFirestations().get(1).getAddress()).isEqualTo("8 rue grande");
+		assertThat(this.data.getFirestations().get(2).getStation()).isEqualTo("2");
+		assertThat(this.data.getFirestations().get(2).getAddress()).isEqualTo("4 avenue des champs élysée");
+	}
+	@Test
+	public void putFirestationTestWhithNotFound() {
+		boolean res = fireStationService.putfireStationService(new FireStation("4ruelle","2"));
+		assertFalse(res);
+		assertThat(this.data.getFirestations().size() == 3);		
+		assertThat(this.data.getFirestations().get(0).getStation()).isEqualTo("1");
+		assertThat(this.data.getFirestations().get(0).getAddress()).isEqualTo("4 la ruelle");
+		assertThat(this.data.getFirestations().get(1).getStation()).isEqualTo("1");
+		assertThat(this.data.getFirestations().get(1).getAddress()).isEqualTo("8 rue grande");
+		assertThat(this.data.getFirestations().get(2).getStation()).isEqualTo("2");
+		assertThat(this.data.getFirestations().get(2).getAddress()).isEqualTo("4 avenue des champs élysée");
+	}
 	
 	
 	@Test

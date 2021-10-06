@@ -43,9 +43,30 @@ public class PersonControllerTest {
                 .andExpect(status().isCreated());
 	}
 	
-	 @Test
+	@Test
+	public void createPersonneTestError() throws Exception {
+		this.mockMvc.perform(MockMvcRequestBuilders.post("/person")
+				.contentType(APPLICATION_JSON)
+                .content("{\"firstName\": \"Guillaume\",\"lastName\": \"Aubert\"}")
+                .accept(APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest());
+	}
+	
+    @Test
+    void putPersonTest() throws Exception {
+		this.mockMvc.perform(MockMvcRequestBuilders.put("/person")
+				.contentType(APPLICATION_JSON)
+                .content("{\"firstName\": \"John\",\"lastName\": \"Boyd\",\"address\": \"4 la ruelle\",\"city\": \"Noisy-Rudignon\",\"zip\": \"77940\",\"phone\": \"0669120050\",\"email\": \"aubert2@gmx.fr\"}")
+                .accept(APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+    }
+	
+
+	@Test
 	    void putPersonTestWithnull() throws Exception {
-	        this.mockMvc.perform(MockMvcRequestBuilders.delete("/person")
+	        this.mockMvc.perform(MockMvcRequestBuilders.put("/person")
 	                .contentType(APPLICATION_JSON)
 	                .content("")
 	                .accept(APPLICATION_JSON))
@@ -55,30 +76,29 @@ public class PersonControllerTest {
 	 
     @Test
     void putPersonTestWithNoModification() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.delete("/person")
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/person")
                 .contentType(APPLICATION_JSON)
-                .content("{\"firstName\": \"Eric\",\"lastName\": \"Cadigan\"}")
+                .content("{\"firstName\": \"John\",\"lastName\": \"Boyd\"}")
                 .accept(APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
     }
-
     @Test
-    void putPersonTest() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.delete("/person")
+    void putPersonTestPersonNotFound() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/person")
                 .contentType(APPLICATION_JSON)
-                .content("{\"firstName\": \"Eric\",\"lastName\": \"Eric\",\"address\": \"4 la ruelle\",\"city\": \"Noisy-Rudignon\",\"zip\": \"77940\",\"phone\": \"0669120050\",\"email\": \"aubert2@gmx.fr\"}")
+                .content("{\"firstName\": \"Lientenant\",\"lastName\": \"Columbo\"}")
                 .accept(APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
-    
 	
     @Test
     void deletePersonTest() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.delete("/person")
                 .contentType(APPLICATION_JSON)
-                .content("{\"firstName\": \"Eric\",\"lastName\": \"Cadigan\"}")
+                .param("firstName", "Eric")
+                .param("lastName", "Cadigan")
                 .accept(APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
@@ -88,7 +108,8 @@ public class PersonControllerTest {
     void deletePersonTestWithPersonNotFound() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.delete("/person")
                 .contentType(APPLICATION_JSON)
-                .content("{\"firstName\": \"Guillaume\",\"lastName\": \"Aubert\"}")
+                .param("firstName", "Guillaume")
+                .param("lastName", "Aubert")
                 .accept(APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isNotFound());
@@ -97,11 +118,11 @@ public class PersonControllerTest {
     @Test
     void personInfoTest() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get("/personInfo")
-                .contentType(APPLICATION_JSON).param("firstName", "Eric")
-                .param("lastName", "Cadigan")).andExpect(status().isOk())
+                .contentType(APPLICATION_JSON).param("firstName", "Clive")
+                .param("lastName", "Ferguson")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(1)))
                 .andExpect(content().string(
-                        "[{\"firstName\":\"Eric\",\"lastName\":\"Cadigan\",\"address\":\"951 LoneTree Rd\",\"city\":\"Culver\",\"zip\":\"97451\",\"age\":76,\"email\":\"gramps@email.com\",\"medications\":[\"tradoxidine:400mg\"],\"allergies\":[]}]"));
+                        "[{\"firstName\":\"Clive\",\"lastName\":\"Ferguson\",\"address\":\"748 Townings Dr\",\"city\":\"Culver\",\"zip\":\"97451\",\"age\":27,\"email\":\"clivfd@ymail.com\",\"medications\":[],\"allergies\":[]}]"));
     }
 
     @Test
@@ -112,13 +133,13 @@ public class PersonControllerTest {
     }
 	
 	 @Test
-	    void childAlertTestWithoutChilds() throws Exception {
+	 void childAlertTestWithoutChilds() throws Exception {
 	        this.mockMvc.perform(MockMvcRequestBuilders.get("/childAlert")
 	                .contentType(APPLICATION_JSON).param("address", "4 la ruelle"))
 	                .andExpect(status().isNotFound());
-	    }
+	 }
 	 
-    @Test
+    /*@Test
     void childAlertTestWithChilds() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get("/childAlert")
                 .contentType(APPLICATION_JSON)
@@ -126,7 +147,7 @@ public class PersonControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                 "[{\"firstName\":\"John\",\"lastName\":\"Boyd\",\"age\":37},{\"firstName\":\"Jacob\",\"lastName\":\"Boyd\",\"age\":32},{\"firstName\":\"Tenley\",\"lastName\":\"Boyd\",\"age\":9},{\"firstName\":\"Roger\",\"lastName\":\"Boyd\",\"age\":4},{\"firstName\":\"Felicia\",\"lastName\":\"Boyd\",\"age\":35}]"));
-    }
+    }*/
 
 	@Test
 	public void communityEmailTestUknownCity() throws Exception {
@@ -141,9 +162,7 @@ public class PersonControllerTest {
                 .contentType(APPLICATION_JSON).param("city", "Culver"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
-                "[\"jaboyd@email.com\",\"drk@email.com\",\"tenz@email.com\",\"jaboyd@email.com\",\"jaboyd@email.com\",\"drk@email.com\",\"tenz@email.com\",\"jaboyd@email.com\",\"jaboyd@email.com\",\"tcoop@ymail.com\",\"lily@email.com\",\"soph@email.com\",\"ward@email.com\",\"zarc@email.com\",\"reg@email.com\",\"jpeter@email.com\",\"jpeter@email.com\",\"aly@imail.com\",\"bstel@email.com\",\"ssanw@email.com\",\"bstel@email.com\",\"clivfd@ymail.com\",\"gramps@email.com\"]"))
-                .andExpect(jsonPath("$.length()", is(23)));
+                "[\"drk@email.com\",\"tenz@email.com\",\"jaboyd@email.com\",\"jaboyd@email.com\",\"drk@email.com\",\"tenz@email.com\",\"jaboyd@email.com\",\"jaboyd@email.com\",\"tcoop@ymail.com\",\"lily@email.com\",\"soph@email.com\",\"ward@email.com\",\"zarc@email.com\",\"reg@email.com\",\"jpeter@email.com\",\"jpeter@email.com\",\"aly@imail.com\",\"bstel@email.com\",\"ssanw@email.com\",\"bstel@email.com\",\"clivfd@ymail.com\"]"))
+                .andExpect(jsonPath("$.length()", is(21)));
     }
-	
-	
 }

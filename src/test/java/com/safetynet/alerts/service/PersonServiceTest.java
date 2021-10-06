@@ -21,6 +21,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.safetynet.alerts.dto.ChildAlertDTO;
 import com.safetynet.alerts.dto.PersonInfoDTO;
@@ -28,6 +30,8 @@ import com.safetynet.alerts.model.Data;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 
+@SpringBootTest
+@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
 	
@@ -36,6 +40,12 @@ public class PersonServiceTest {
 	
 	@Mock
 	private Data data;
+	
+	@Mock
+	private Validator validator;
+	
+	@Autowired
+	private Validator validator2;
 	
 	@BeforeEach
 	public void setupData() {
@@ -65,7 +75,7 @@ public class PersonServiceTest {
 		
 	}
 	
-	/*@Test
+	@Test
 	public void postPersonTest() {
 		boolean res = personService.postPersonService(new Person("Christophe", "Alvis", "3 rue Grande", "Dormelles", "77940", "0645655425", "Christophe4@yahoo.fr"));
 		assertTrue(res);
@@ -82,7 +92,7 @@ public class PersonServiceTest {
 	@Test
 	public void postPersonTestWithValueNull() {
 		Person person = new Person(null, null,null,null,null,null,null);
-		when(validator.validate(person)).thenReturn(validator.validate(person));
+		lenient().when(validator.validate(person)).thenReturn(validator2.validate(person));
 		boolean res = personService.postPersonService(person);
 		assertFalse(res);
 		assertThat(this.data.getPersons().size() == 5);
@@ -91,7 +101,7 @@ public class PersonServiceTest {
 		assertThat(this.data.getPersons().get(2).getFirstName().equalsIgnoreCase("Michel"));
 		assertThat(this.data.getPersons().get(3).getFirstName().equalsIgnoreCase("Margaux"));
 		assertThat(this.data.getPersons().get(4).getFirstName().equalsIgnoreCase("Amandine"));
-	}*/
+	}
 	
 	@Test
 	public void putPersonTestWithPersonDontFind() {

@@ -53,7 +53,6 @@ public class FireStationService {
 		for (ConstraintViolation<FireStation> violation : violations) {
 		    log.error(violation.getMessage()); 
 		}
-		
 		if(violations.size() == 0) {
 			for(FireStation fireStationToEdit : data.getFirestations()) {
 				if(fireStationToEdit.getAddress().equalsIgnoreCase(fireStation.getAddress())) {
